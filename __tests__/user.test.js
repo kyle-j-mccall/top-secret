@@ -4,6 +4,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const UserService = require('../lib/services/UserService');
+const { agent } = require('supertest');
 
 // create a mockuser to test
 const mockUser = {
@@ -36,15 +37,32 @@ describe('top-secret routes', () => {
     return setup(pool);
   });
   it('creates a new user', async () => {
-    const resp = await request(app).post('/api/v1/users').send(mockUser);
+    const res = await request(app).post('/api/v1/users').send(mockUser);
     const { firstName, lastName, email } = mockUser;
 
-    expect(resp.body).toEqual({
+    expect(res.body).toEqual({
       id: expect.any(String),
       firstName,
       lastName,
       email,
     });
+  });
+
+  it('signs in existing user', async () => {
+    await request(app).post('/api/v1/users').send(mockUser);
+    const res = await request(app)
+      .post('/api/v1/users/sessions')
+      .send({ email: 'test@example.com', password: '12345' });
+
+    expect(res.status).toBe(200);
+  });
+  it('logs out a user', async () => {
+    // const agent = request.agent(app);
+    // const user = await UserService.create({ ...mockUser });
+    const [agent] = await registerAndLogin(mockUser);
+    // await agent.post('api/v1/users/sessions').send({ email: 'test@example.com', password: '12345' });
+    const res = await agent.delete('/api/v1/users/sessions');
+    expect(res.status).toBe(204);
   });
   afterAll(() => {
     pool.end();

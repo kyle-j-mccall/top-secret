@@ -10,8 +10,8 @@ CREATE TABLE secrets (
 
 CREATE TABLE users (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  first_name TEXT NOT NULL,
-  last_name TEXT NOT NULL,
+  first_name TEXT,
+  last_name TEXT,
   email TEXT NOT NULL,
   password_hash TEXT NOT NULL
 );
