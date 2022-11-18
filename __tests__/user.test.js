@@ -57,10 +57,7 @@ describe('top-secret routes', () => {
     expect(res.status).toBe(200);
   });
   it('logs out a user', async () => {
-    // const agent = request.agent(app);
-    // const user = await UserService.create({ ...mockUser });
     const [agent] = await registerAndLogin(mockUser);
-    // await agent.post('api/v1/users/sessions').send({ email: 'test@example.com', password: '12345' });
     const res = await agent.delete('/api/v1/users/sessions');
     expect(res.status).toBe(204);
   });
