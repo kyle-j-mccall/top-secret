@@ -22,14 +22,12 @@ const registerAndLogin = async (userProps = {}) => {
   //create a user to sign in with
 
   const user = await UserService.create({ ...mockUser, ...userProps });
-  console.log('userrrrr', user);
+
   //use user to sign in
 
   const { email } = user;
-  const signIn = await agent
-    .post('/api/v1/users/sessions')
-    .send({ email, password });
-  console.log(signIn.body);
+  await agent.post('/api/v1/users/sessions').send({ email, password });
+
   return [agent, user];
 };
 
